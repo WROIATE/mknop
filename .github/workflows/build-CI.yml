@@ -1,18 +1,20 @@
 name: OpenWrt-CI
 
 on:
-  schedule:
-    - cron: '0 22 * * 5'
-  repository_dispatch:
-    types: 'run'
-    
+ # schedule:
+   # - cron: '0 22 * * 5'
+  #repository_dispatch:
+    #types: 'run'
+  watch:
+    types: started
 env:
   TZ: 'Asia/Shanghai'
+  SSH_ACTIONS: true  
 
 jobs:
   build:
     runs-on: ubuntu-18.04
-    if: github.event_name == 'schedule' || github.event.action == 'run'
+    if: github.event.repository.owner.id == github.event.sender.id
 
     steps:
       - name: Checkout
@@ -38,7 +40,11 @@ jobs:
         run: |
           chmod +x $CONFIG
           ./$CONFIG
-
+          
+      - name: SSH connection to Actions
+        uses: garypang13/debugger-action@master
+        if: env.SSH_ACTIONS == 'true'
+        
       - name: Compile openwrt
         run: |
           cd lede
