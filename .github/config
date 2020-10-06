@@ -3,7 +3,9 @@
 cd lede
 
 git clone https://github.com/tuanqing/install-program package/install-program
-git clone https://github.com/jerrykuku/luci-theme-argon -b 18.06 package/luci-theme-argon
+git clone https://github.com/WROIATE/luci-app-ustb.git package/WROIATE/luci-app-ustb
+git clone https://github.com/kenzok8/openwrt-packages.git package/kenzok8
+git clone https://github.com/kenzok8/small.git package/lienol-dependence
 
 cat >feeds.conf.default <<-EOF
 # src-git packages https://git.openwrt.org/feed/packages.git
@@ -12,7 +14,7 @@ src-git packages https://github.com/Lienol/openwrt-packages.git;dev-master
 src-git luci https://github.com/Lienol/openwrt-luci.git;dev-18.06
 src-git routing https://git.openwrt.org/feed/routing.git
 src-git telephony https://git.openwrt.org/feed/telephony.git
-src-git helloworld https://github.com/fw876/helloworld.git
+# src-git helloworld https://github.com/fw876/helloworld.git
 EOF
 
 rm -rf package/lean/{samba4,luci-app-samba4,luci-app-ttyd,luci-theme-argon}
@@ -42,15 +44,6 @@ sed -i '/FEATURES+=/ { s/cpiogz //; s/ext4 //; s/ramdisk //; s/squashfs //; }' \
 for x in $packages; do
     sed -i "/DEFAULT_PACKAGES/ s/$/ $x/" target/linux/armvirt/Makefile
 done
-
-rm -f package/lean/shadowsocksr-libev/patches/0002-Revert-verify_simple-and-auth_simple.patch
-sed -i '383,393 d' package/lean/shadowsocksr-libev/patches/0001-Add-ss-server-and-ss-check.patch
-sed -i 's/PKG_RELEASE:=5/PKG_RELEASE:=6/' package/lean/shadowsocksr-libev/Makefile
-sed -i '/PKG_SOURCE_VERSION:=/d' package/lean/shadowsocksr-libev/Makefile
-sed -i '/PKG_SOURCE_URL/a PKG_SOURCE_VERSION:=4799b312b8244ec067b8ae9ba4b85c877858976c' \
-    package/lean/shadowsocksr-libev/Makefile
-
-sed -i 's/ipaddr:-"192.168.1.1"/ipaddr:-"192.168.1.10"/' package/base-files/files/bin/config_generate
 
 cat >.config <<-EOF
 ## target
